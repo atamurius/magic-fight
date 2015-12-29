@@ -275,22 +275,6 @@ object Main extends App {
     armor = 5
   )
 
-  def firstWin(win: Option[Fight], current: Fight, proceed: => Option[Fight]) = current.turn.winner match {
-    case Some(c) if c.isInstanceOf[Wizard] => Some(current)
-    case None if win.isEmpty => proceed
-    case _ => win
-  }
-
-  def lessManaWin(win: Option[Fight], current: Fight, proceed: => Option[Fight]) = (win, current.turn.winner) match {
-    case (Some(best), _) if best.manaSpent <= current.manaSpent => win
-    case (_, Some(c)) if c.isInstanceOf[Wizard] => {
-      printf("*** Found win in %d turns with %d mana%n", current.size, current.manaSpent)
-      Some(current)
-    }
-    case (_, None) => proceed
-    case _ => win
-  }
-
   val solution = Start(player vs boss).traverse(Option.empty[Fight])((maybeBest, current, proceed) =>
     (current.turn.winner, maybeBest) match {
       case (_, Some(best)) if current.manaSpent >= best.manaSpent => maybeBest
